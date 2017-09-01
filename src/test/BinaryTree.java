@@ -1,9 +1,15 @@
 package test;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Stack;
 
 public class BinaryTree {
+	/**
+	 * 用内部类申明结点结构
+	 * @author Administrator
+	 *
+	 */
 	class Node{
 		int value = 0;
 		Node lchild = null;
@@ -13,20 +19,28 @@ public class BinaryTree {
 		}
 	}
 	
-	Node createTree(int[] input,int length,int i) {
-		if(input[i]!=-1 && i<length) {
-			Node node = new Node(input[i]);
-		}
-		else if(input[i] ==-1 && i<length) {
-			Node node = null;
-		}
-		createTree( input, length,++i);
-		createTree(input,length,++i);
-		
-
-		
+	/**
+	 * 先序创建二叉树
+	 * i为数组下标
+	 */
+	static int i = 0;
+	Node createTree(int[] input) {
+		Node node= null;
+		if(input[i]<0)
+			return node;
+			node = new Node(input[i]);
+			i++;
+			node.lchild = createTree( input);
+			i++;
+			node.rchild = createTree(input);
+		return node;
 	}
 	
+	/**
+	 * 递归方式实现先序遍历
+	 * @param root
+	 * @param result
+	 */
 	void preOrder(Node root,ArrayList<Node> result){
 		if(root == null)
 			return ;
@@ -35,6 +49,11 @@ public class BinaryTree {
 		preOrder(root.rchild,result);
 	}
 	
+	/**
+	 * 递归方式实现中序遍历
+	 * @param root
+	 * @param result
+	 */
 	void midOrder(Node root,ArrayList<Node> result) {
 		if(root == null)
 			return ;
@@ -43,6 +62,11 @@ public class BinaryTree {
 		midOrder(root.rchild, result);
 	}
 	
+	/**
+	 * 递归方式实现后序遍历
+	 * @param root
+	 * @param result
+	 */
 	void postOrder(Node root,ArrayList<Node> result) {
 		if(root == null)
 			return ;
@@ -50,12 +74,15 @@ public class BinaryTree {
 		postOrder(root.rchild,result);
 		result.add(root);
 	}
+	
 	/**
-	 * 根，然后右左结点循环入栈
+	 * 迭代方式实现先序遍历。
+	 * 因为递归就是用到栈的原理，所以所有递归式子都可以用栈来表示，遍历一定用到了栈。
+	 * 1.根入栈
+	 * 2.栈顶元素出栈，右结点入栈，左节点入栈。循环该步骤
 	 * @param root
 	 * @return
 	 */
-	
 	ArrayList<Node> preOrder(Node root) {
 		Stack<Node> stack = new Stack<Node>();
 		ArrayList<Node> list = new ArrayList<Node>();
@@ -63,7 +90,7 @@ public class BinaryTree {
 			return list;
 		}
 		stack.push(root);
-		while(!list.isEmpty()) {
+		while(!stack.isEmpty()) {
 			Node node = stack.pop();
 			list.add(node);
 			if(node.rchild!= null)
@@ -75,7 +102,8 @@ public class BinaryTree {
 	}
 	
 	/**
-	 * 
+	 * 迭代方式实现中序遍历。
+	 * 先将所有左节点压栈，左节点为空时，说明已经到了该树枝的尽头，则栈顶元素出栈，再去遍历该结点的右子树
 	 * @param root
 	 * @return
 	 */
@@ -97,8 +125,11 @@ public class BinaryTree {
 		return list;
 	}
 	/**
-	 * 刚刚打印完的结点print
-	 * 栈顶结点top
+	 * 迭代实现后序遍历。
+	 * 两个重要的变量：刚刚打印完的结点print和栈顶结点top，初始值print为根节点，top为null
+	 * 1.先判断栈顶结点的左子树是否被遍历，遍历原理是：判断print是否为栈顶节点的左孩子或者右孩子结点
+	 * 2.再判断栈顶结点的右子树是否被遍历，遍历原理是：判断print是否为栈顶节点的右孩子结点
+	 * 3.若左右子树都被遍历了，则栈顶结点出栈，打印该该节点。
 	 * 找到top和print结点的关系
 	 * @param root
 	 * @return
@@ -129,9 +160,16 @@ public class BinaryTree {
 		return list;
 	}
 	
+	
 	public static void main(String[] args) {
 		BinaryTree bt = new BinaryTree();
-		Node node = bt.new Node();
+		//测试数据
+		int[] array = {3,5,-1,9,-1,-1,7,11,-1,-1,13,-1,-1};
+		Node root =bt.createTree(array);
+		ArrayList<Node> list = bt.postOrder(root);
+		for(Node node : list) {
+			System.out.print(node.value + " ");
+		}
 		
 	}
 	
